@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Splitbook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script>
+        $(document).ready(function(){
+			$("#addmemberbtn").click(function(){
+				$("#dashboardcard").fadeOut();
+				$("#contributioncard").fadeOut();
+				$("#addmembercard").delay(500).fadeIn();
+			});
+			$("#dashboardbtn").click(function(){
+				$("#addmembercard").fadeOut();
+				$("#contributioncard").fadeOut();
+				$("#dashboardcard").delay(500).fadeIn();
+			});
+			$("#addcontributionbtn").click(function(){
+				$("#addmembercard").fadeOut();
+				$("#dashboardcard").fadeOut();
+				$("#contributioncard").delay(500).fadeIn();
+			});
+		});
+		function fetchFriends()
+		{
+		    const inputElement = document.getElementById('membername');
+            const suggestionList = document.getElementById('friendsList');
+            const inputValue = inputElement.value;
+            const trip = document.getElementById('tripid');
+            const tripId = trip.textContent;
+
+            suggestionList.innerHTML = '';
+
+            fetch(`/getmember?query=${inputValue}`)
+            .then(response => response.json())
+            .then(suggestions => {
+                suggestions.forEach(suggestion => {
+                    const name = suggestion.name;
+                    const anchor = document.createElement('a');
+                    anchor.textContent = name;
+                    anchor.href = `/addmember?username=${suggestion.username}&tripid=${tripId}`;
+                    anchor.classList.add('suggestion-link');
+
+                    suggestionList.appendChild(anchor);
+                });
+            });
+		}
+    </script>
+    <style>
+        body
+        {
+            font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+            background-color: #ffebe6;
+        }
+        .navbuttons
+        {
+          padding : 5px 5px 5px 5px;
+          display : inline-block;
+        }
+        .suggestion-link {
+          display: block;
+          padding: 0px;
+          text-decoration: none;
+          color: #333;
+          font-weight:bold;
+        }
+        .suggestion-link:hover {
+          background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid ">
+        <span class="navbar-brand text-light" style="font-size:25px"><b>SplitBook</b></span>
+        <div style="margin-left:auto;margin-right:10px">
+            <div class="navbuttons" title="Go to Home">
+                <a class="btn btn-primary" href="/welcome">
+                    <i class="fa fa-home" aria-hidden="true" style="font-size:25px"></i>
+                </a>
+            </div>
+            <div class="navbuttons" title="Logout">
+                <form method="post" action="/logout">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-sign-out" aria-hidden="true" style="font-size:25px"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col" style="height: 100px;">
+
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="row">
+                <div style="height:100px;">
+                    <span th:text="${trip.name}" style="font-size:40px;font-style:italic"></span>
+                    <span th:text="${trip.id}" style="display:none" id="tripid"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="card text-bg-primary mb-3" style="max-width: 15rem;">
+                            <div class="card-body mt-4 mb-3">
+                                <i class="fa fa-user" aria-hidden="true" style="font-size:48px;text-align:center;width:190px"></i>
+                                <button class="btn btn-primary mt-3" id="addmemberbtn" style="text-align:center;width:190px"><b>Add a member</b></button>
+                            </div>
+                        </div>
+                        <div class="card text-bg-warning mb-3" style="max-width: 15rem;margin-left:20px">
+                            <div class="card-body mt-4 mb-3">
+                                <i class="fa fa-money" aria-hidden="true" style="font-size:48px;text-align:center;width:190px"></i>
+                                <button class="btn btn-warning mt-3" id="addcontributionbtn" style="text-align:center;width:190px"><b>Add a contribution</b></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card text-bg-danger mb-3" style="max-width: 15rem;">
+                            <div class="card-body mt-4 mb-3">
+                                <i class="fa fa-bar-chart" aria-hidden="true" style="font-size:48px;text-align:center;width:190px"></i>
+                                <button class="btn btn-danger mt-3" id="dashboardbtn" style="text-align:center;width:190px"><b>Dashboard</b></button>
+                            </div>
+                        </div>
+                        <div class="card text-bg-success mb-3" style="max-width: 15rem;margin-left:20px">
+                            <div class="card-body mt-4 mb-3">
+                                <i class="fa fa-table" aria-hidden="true" style="font-size:48px;text-align:center;width:190px"></i>
+                                <a href="#" class="btn btn-success mt-3" style="text-align:center;width:190px"><b>Export report</b></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span th:text="${msg1}" style="font-style:italic;font-weight:bold"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card" id="dashboardcard">
+                        <div class="card-header text-bg-danger" style="font-weight:bold;font-size:20px">Dashboard</div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-5">
+                                    <div class="card border-danger">
+                                        <h4 class="card-header" style="margin-bottom:10px;font-weight:bold">Summary<i class="fa fa-credit-card" aria-hidden="true" style="float:right"></i></h4>
+                                        <div class="card-body text-danger" style="height:110px">
+                                            <h4 class="card-text text-end mt-2" style="font-weight:bold;font-style:italic">₹&nbsp;<span th:text="${totalexpense}"></span></h4>
+                                            <h4 class="card-text text-end mt-2" style="font-weight:bold;font-style:italic"><span th:text="${memberscount}"></span>&nbsp;members</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card border-primary" >
+                                        <h4 class="card-header" style="margin-bottom:20px;font-weight:bold">Results<i class="fa fa-info-circle" aria-hidden="true" style="float:right" title="Check here for the end results and clear out the settlements"></i></h4>
+                                        <div class="card-body" style="padding:0px 0px 0px 10px">
+                                            <table class="table table-borderless">
+                                                <tbody style="display: block;height: 84px; overflow-y: scroll">
+                                                <tr th:each="result : ${results}">
+                                                    <td style="font-style:italic;padding:0px 0px 3px 3px;width:240px" th:text="${result.info}"></td>
+                                                    <td style="font-weight:bold;padding:0px 0px 3px 0px;">₹&nbsp;<span th:text="${result.amount}"></span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="card text-bg-light">
+                                        <h4 class="card-header" style="font-weight:bold">Records</h4>
+                                        <div class="card-body" style="padding-bottom:0px">
+                                            <table class="table table-borderless table-light">
+                                                <tbody style="display: block;height:100px; overflow-y: scroll">
+                                                <tr th:each="record : ${records}">
+                                                    <th scope="row" style="padding:0px 0px 3px 0px;width:100px" th:text="${record.date}"></th>
+                                                    <td style="font-weight:bold;padding:0px 0px 3px 0px;width:100px" th:text="${record.description}"></td>
+                                                    <td style="font-style:italic;padding:0px 0px 3px 0px;width:300px" th:text="${record.info}"></td>
+                                                    <td style="padding:0px 0px 3px 0px"><a th:href="@{/deleterecord/{tripid}/{rid}(tripid=${record.tid},rid=${record.cid})}" title="Delete this record"><i class="fa fa-times" aria-hidden="true" style="font-size:15px;color:red"></i></a></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" id="addmembercard" style="max-width: 25rem;display:none">
+                        <div class="card-header text-bg-primary" style="font-weight:bold;font-size:20px">Add a member</div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-4">
+                                    <input type="text" class="form-control" id="membername" name="membername" onkeyup="fetchFriends()" placeholder="Type your friend's name...">
+                                </div>
+                                <div class="list-group" id="friendsList" style="display: block; max-height: 80px; overflow-y: scroll"></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card" id="contributioncard" style="max-width: 30rem;display:none">
+                        <div class="card-header text-bg-warning" style="font-weight:bold;font-size:20px">Add a contribution</div>
+                        <div class="card-body">
+                            <form method="post" th:action="@{/addcontribution}" th:object="${contribution}">
+                                <input type="hidden" th:value="${trip.id}" name="tripid">
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <input type="text" class="form-control" id="description" name ="description" th:value="*{description}" style="max-width:25rem" placeholder="e.g. movie tickets,fuel,etc">
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="date" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="date" name="date" th:value="*{date}" style="max-width:10rem">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="amount" class="form-label">Amount</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">₹</span>
+                                            <input type="number" step="any" class="form-control" id="amount" name="amount" th:value="*{amount}" style="max-width:8rem"	>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Contributor's name</label>
+                                        <select class="form-select" id="contributor" name="contributor" th:value="*{contributor}" style="max-width:10rem">
+                                            <option th:each="member : ${mymembers}" th:value="${member.id}" th:text="${member.name}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="selectbeneficiaries" class="form-label">Select your friends</label>
+                                        <div id="selectbeneficiaries" style="max-width:9rem;border-radius:8px;border:1px solid;padding:5px 5px 5px 5px">
+                                            <div th:each="member : ${mymembers}">
+                                                <input class="form-check-input"  type="checkbox" name="beneficiaries" th:value="${member.id}"/>
+                                                <span th:text="${member.name}"></span><br/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-warning" style="max-width:8rem;font-weight:bold">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br><br><br>
+</body>
+</html>

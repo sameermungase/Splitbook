@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Splitbook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script>
+		$(document).ready(function(){
+			$("#addtripbtn").click(function(){
+				$("#addfriendcard").fadeOut();
+				$("#tripscard").fadeOut();
+				$("#addtripcard").delay(500).fadeIn();
+			});
+			$("#addfriendbtn").click(function(){
+				$("#tripscard").fadeOut();
+				$("#addtripcard").fadeOut();
+				$("#addfriendcard").delay(500).fadeIn();
+			});
+			$("#tripscardbtn").click(function(){
+				$("#addtripcard").fadeOut();
+				$("#addfriendcard").fadeOut();
+				$("#tripscard").delay(500).fadeIn();
+			});
+			$("#showrequestsbtn").click(function(){
+			    $("#popup").fadeIn();
+			});
+			$("#popupclose").click(function(){
+			    $("#popup").fadeOut();
+			});
+		});
+		function fetchSuggestions() {
+            const inputElement = document.getElementById('friendname');
+            const suggestionList = document.getElementById('suggestionList');
+            const inputValue = inputElement.value;
+
+            suggestionList.innerHTML = '';
+
+            fetch(`/getfriend?query=${inputValue}`)
+            .then(response => response.json())
+            .then(suggestions => {
+                suggestions.forEach(suggestion => {
+                    const us = suggestion.username;
+                    const anchor = document.createElement('a');
+                    anchor.textContent = us;
+                    anchor.href = `/addfriend?username=${suggestion.username}`;
+                    anchor.classList.add('suggestion-link');
+
+                    suggestionList.appendChild(anchor);
+                });
+            });
+        }
+
+        function deleteRequest(id) {
+	        fetch(`/deleterequest?query=${id}`)
+	        .then(response => response.text())
+	        .then(rsptxt => {
+		        document.getElementById("msg3").innerHTML = rsptxt;
+	        });
+        }
+
+        function acceptRequest(id) {
+	        fetch(`/acceptrequest?query=${id}`)
+	        .then(response => response.text())
+	        .then(rsptxt => {
+		        document.getElementById("msg3").innerHTML = rsptxt;
+	        });
+        }
+
+        function fetchRequests() {
+	        const output = document.getElementById('requestList');
+	        output.innerHTML = '';
+	        fetch(`/getfriendrequests`)
+	        .then(response => response.json())
+	        .then(friendrequests => {
+		        friendrequests.forEach(friendrequest => {
+			        const node = document.createElement("div");
+
+			        const elem1 = document.createTextNode(friendrequest.name);
+                    const elem3 = document.createElement("a");
+                    elem3.classList.add('linkbuttons');
+                    elem3.textContent = "Reject";
+                    elem3.href = `/deleterequest?query=${friendrequest.uid}`;
+                    const elem2 = document.createElement("a");
+                    elem2.classList.add('linkbuttons');
+                    elem2.textContent = "Accept";
+                    elem2.href = `/acceptrequest?query=${friendrequest.uid}`;
+			        node.appendChild(elem1);
+                    node.appendChild(elem2);
+                    node.appendChild(elem3);
+			        output.appendChild(node);
+		        });
+	        });
+        }
+	</script>
+    <style>
+      body
+      {
+          font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+          background-color: #ccebff;
+      }
+      .suggestion-link {
+        display: block;
+        padding: 0px;
+        text-decoration: none;
+        color: #333;
+        font-weight:bold;
+      }
+      .suggestion-link:hover {
+        background-color: #f0f0f0;
+      }
+      .navbuttons
+      {
+        padding : 5px 5px 5px 5px;
+        display : inline-block;
+      }
+
+      .linkbuttons
+      {
+        display: inline-block;
+        padding: 6px 12px; /* Smaller padding */
+        background-color: #0074d9; /* Button background color */
+        color: #fff; /* Text color */
+        text-decoration: none; /* Remove underline from the link */
+        border: none;
+        border-radius: 4px; /* Smaller border radius */
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        float : right;
+        margin-left: 10px;
+      }
+
+      #popup
+      {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 400px;
+      }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid ">
+        <span class="navbar-brand text-light" style="font-size:25px"><b>SplitBook</b></span>
+        <div style="margin-left:auto;margin-right:10px">
+            <div class="navbuttons" title="Show friend requests">
+                <button class="btn btn-primary position-relative" id="showrequestsbtn" onclick="fetchRequests()">
+                    <i class="fa fa-users" aria-hidden="true" style="font-size:25px;color:white"></i>
+                    <span th:text="${requestcount}" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"></span>
+                </button>
+            </div>
+            <div class="navbuttons" title="Logout">
+                <form method="post" action="/logout">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-sign-out" aria-hidden="true" style="font-size:25px"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col" style="height: 100px;">
+
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="row">
+                <div name="title" style="height:100px;">
+                    <span style="font-size:35px;font-style:italic">Welcome,</span>
+                    <span style="font-size:35px;font-style:italic;color:#000099" th:text="${username}"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="card text-bg-primary mb-3">
+                            <div class="card-body mt-3">
+                                <h5 class="card-title"><b>Planning a trip?</b></h5>
+                                <br>
+                                <p class="card-text">Start by adding a trip and SplitBook will manage all your expenses so that your trip goes hassle-free.</p>
+                                <button class="btn btn-outline-light" id="addtripbtn">Add a trip</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card text-bg-success mb-3">
+                            <div class="card-body mt-3">
+                                <h5 class="card-title"><b>Connect with your friends</b></h5>
+                                <br>
+                                <p class="card-text">Add friends and sync all your expenses among your friends, all in one go!</p>
+                                <button class="btn btn-outline-light" id="addfriendbtn">Add a friend</button>&nbsp;&nbsp;&nbsp;
+                                <span th:text="${msg2}" style="font-style:italic;font-weight:bold"></span>
+                                <span id="msg3" style="font-style:italic;color:red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card text-bg-warning mb-3">
+                            <div class="card-body mt-3">
+                                <h5 class="card-title"><b>Manage my trips</b></h5>
+                                <br>
+                                <p class="card-text">Let SplitBook handle all your expenses and contributions so that your trip goes hassle-free.</p>
+                                <button class="btn btn-light mb-3" id="tripscardbtn">Show my trips</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="card mb-3" style="max-width: 25rem;border:0px;padding:0px;display:none" id="addtripcard">
+                            <div class="card-header text-bg-primary" style="font-weight:bold;font-size:20px">Add your trip</div>
+                            <div class="card-body">
+                                <form name="addtripform" method="post" action="/addtripprocess">
+                                    <div class="mb-4">
+                                        <input type="text" class="form-control" id="tripname" name="tripname" placeholder="Give a name to your memorable trip">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add trip!</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card mb-3" style="max-width: 25rem;border:0px;padding:0px;display:none" id="addfriendcard">
+                            <div class="card-header text-bg-success" style="font-weight:bold;font-size:20px">Add a friend</div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="mb-4">
+                                        <input type="text" class="form-control" id="friendname" name="friendname" onkeyup="fetchSuggestions()" placeholder="Type your friend's username...">
+                                    </div>
+                                    <div class="list-group" id="suggestionList" style="display: block; max-height: 80px; overflow-y: scroll"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card mb-3" style="border:0px;padding:0px;display:none" id="tripscard">
+                            <div class="card-header text-bg-warning" style="font-weight:bold;font-size:20px">Your trips</div>
+                            <div class="card-body">
+                                <div style="font-style:italic;font-weight:bold" th:if="${notrip}=='1'">You have no trips</div>
+                                <div style="display: block; max-height: 150px; overflow-y: scroll">
+                                    <div class="list-group" th:each="trip : ${mytrips}">
+                                        <a th:href="@{/mytrip/dashboard/{id}(id=${trip.id})}" class="list-group-item list-group-item-action" th:text="${trip.name}"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+<div class="card" style="border:0px;padding:0px;display:none" id="popup">
+    <div class="card-header text-bg-primary" style="font-weight:bold;font-size:20px">
+        Friend Requests
+        <span style="float:right">
+            <button class="btn btn-primary btn-sm" id="popupclose">
+                <i class="fa fa-times" aria-hidden="true" style="color:#ffe6e6"></i>
+            </button>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="list-group" id="requestList" style="display: block; max-height: 80px; overflow-y: scroll"></div>
+    </div>
+</div>
+</body>
+</html>

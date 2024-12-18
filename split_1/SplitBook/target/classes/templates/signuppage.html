@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Sign up for Splitbook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      body
+      {
+          font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+      }
+      .enlarge-on-hover
+      {
+          transition: transform 0.3s ease-in-out;
+      }
+
+      .enlarge-on-hover:hover
+      {
+          transform: scale(1.1);
+          z-index: 1;
+      }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid ">
+        <a class="navbar-brand text-light" href="#"><b>SplitBook</b></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav" style="margin-left:auto;margin-right:10px">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col" style="height: 150px;"></div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div name="title" style="height:100px;text-align:center">
+                <span style="font-size:35px"><em>Welcome to </em></span>
+                <span style="color:#0a3b8a;font-size:40px">SplitBook</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="./images/signup.png" class="enlarge-on-hover" alt="Sign Up" style="height:250px;width:250px">
+                </div>
+                <div class="col-md-6">
+                    <form name="signupform" method="post" action="/signupprocess">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Preferably your first name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <br>
+                        <div class="mb-3">
+                            <span id="message" name="message" th:text="${msg}" style="font-style:italic;font-size:15px;color:red"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+</body>
+</html>
