@@ -29,10 +29,3 @@ mvn clean install
  ### Run
 
  After running the application, visit http://localhost:8081 in your browser.
-
- ## Contributing
-
-Any contribution or suggestion is welcomed! Here are some ways you can get started:
-
-1. Report bugs: If you encounter any bugs, please let us know. Open up an issue and let us know the problem.
-2. Contribute code: If you want to contribute, suggest some new ideas or add any useful documentation, follow the instructions below to get started!
